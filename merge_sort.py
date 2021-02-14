@@ -1,4 +1,52 @@
-print('Введите ')
+def play():
+    InFileName = []
+
+    base_prompt = """
+        Пожалуйста введите параметры программы через пробел
+        Режим сортировки: (-a или -d), необязательный, по умолчанию сортирует по возрастанию
+        Тип данных: (-s или -i), обязательный, s-string, i-integer
+        Имя выходного файла, обязательный, Например: Out.txt
+        Имена выходных файлов, не менее одного
+        """
+    feedback = ""
+
+    while True:
+        parameter_program = input(feedback + "\n" + base_prompt) # -a -s Out.txt in1.txt
+
+        feedback = ""
+        parameter_program = parameter_program.split()
+
+        if len(parameter_program) == 0:
+            print("Вы не ввели параметры программы")
+        else:
+            command = parameter_program
+            print(command)
+            return
+
+
+play()
+# parameter_program = input()
+# parameter_program = parameter_program.split()
+# print(parameter_program)
+#
+# if '-a' == parameter_program[0] or '-d' == parameter_program[0]:
+#     print('tet')
+
+
+
+# try:
+#     if "-a" == parameter_program[0]:
+#         print('tyt')
+# except:
+#     print("Ошибка, введено не целое число")
+
+
+class FileName:
+
+    def __init__(self, file_name):
+        self.file_name = file_name
+
+
 
 with open("IN1.txt", "r") as In1:
     list_In1 = In1.read()
