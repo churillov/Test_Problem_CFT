@@ -6,7 +6,7 @@ def play():
         Режим сортировки: (-a или -d), необязательный, по умолчанию сортирует по возрастанию
         Тип данных: (-s или -i), обязательный, s-string, i-integer
         Имя выходного файла, обязательный, Например: Out.txt
-        Имена выходных файлов, не менее одного
+        Имена входных файлов, не менее одного
         """
     feedback = ""
 
@@ -16,7 +16,7 @@ def play():
         feedback = ""
         parameter_program = parameter_program.split()
 
-        if len(parameter_program) == 0:
+        if len(parameter_program) < 3:
             print("Вы не ввели параметры программы")
         else:
             command = parameter_program
