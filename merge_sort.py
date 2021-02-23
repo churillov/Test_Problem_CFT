@@ -5,6 +5,8 @@ import shutil
 
 
 def file_len(file_name):
+    """Функция возращает размер файла
+    в качестве аргумента передается название файла"""
     with open(file_name) as f:
         for i, l in enumerate(f):
             pass
@@ -12,6 +14,8 @@ def file_len(file_name):
 
 
 def file_element(file_name, index):
+    """Функция возвращает конкретный элемент файла.
+    В качестве аргумента передаются название файла и индекс строки которую необхадимо вернуть"""
     with open(file_name, 'r') as f:
         for i, l in enumerate(f):
             if i + 1 == index:
@@ -23,11 +27,14 @@ def file_element(file_name, index):
 
 
 def file_element_save(file_name, data):
+    """Функция сохраняет данные в файл.
+    В качестве аргументов передаются имя файла и данные каторые нужно записать"""
     with open(file_name, 'a') as f:
         d = f.write(data)
 
 
 def merge_f(in_file_name, out_file_name, index):
+    """"""
     with open(in_file_name, 'r') as f:
         for i, l in enumerate(f):
             if i + 1 == index:
@@ -60,14 +67,25 @@ def merge_file(left_list, right_list, out_file_name, out_file_name_r='random'):
             # Сравниваем первые элементы в начале каждого списка
             # Если первый элемент левого подсписка меньше, добавляем его
             # в отсортированный массив
-            if int(file_element(left_list[0], left_list_index)) <= int(file_element(right_list[0], right_list_index)):
-                file_element_save(sorted_list, file_element(left_list[0], left_list_index))
-                left_list_index += 1
-            # Если первый элемент правого подсписка меньше, добавляем его
-            # в отсортированный массив
-            else:
-                file_element_save(sorted_list, file_element(right_list[0], right_list_index))
-                right_list_index += 1
+            try:
+                if int(file_element(left_list[0], left_list_index)) <= int(file_element(right_list[0], right_list_index)):
+                    file_element_save(sorted_list, file_element(left_list[0], left_list_index))
+                    left_list_index += 1
+                # Если первый элемент правого подсписка меньше, добавляем его
+                # в отсортированный массив
+                else:
+                    file_element_save(sorted_list, file_element(right_list[0], right_list_index))
+                    right_list_index += 1
+            except ValueError:
+                if len(file_element(left_list[0], left_list_index)) > 0:
+                    left_list_index += 1
+                elif len(file_element(right_list[0], right_list_index)) > 0:
+                    right_list_index += 1
+                elif len(file_element(left_list[0], left_list_index)) == 0:
+                    left_list_index += 1
+                elif len(file_element(right_list[0], right_list_index)) == 0:
+                    right_list_index += 1
+
 
         # Если достигнут конец левого списка, элементы правого списка
         # добавляем в конец результирующего списка
@@ -82,12 +100,12 @@ def merge_file(left_list, right_list, out_file_name, out_file_name_r='random'):
     return [sorted_list]
 
 
-def merge_sort_file(in_file_name, out_file_name="qw1e.txt"):
+def merge_sort_file(in_file_name, len_in_file="0", out_file_name="qw1e.txt"):
 
     # Возвращаем список, если он состоит из одного элемента
     if len(in_file_name) <= 1:
         return in_file_name
-    if len(in_file_name) > 2:
+    if len(in_file_name) > 2 and len(in_file_name) == len_in_file or len(in_file_name) == 2 and len(in_file_name) == len_in_file:
         # Для того чтобы найти середину списка, используем деление без остатка
         # Индексы должны быть integer
         mid = len(in_file_name) // 2
@@ -98,6 +116,17 @@ def merge_sort_file(in_file_name, out_file_name="qw1e.txt"):
 
         # Объединяем отсортированные списки в результирующий
         return merge_file(left_list, right_list, out_file_name)
+    elif len(in_file_name) > 2:
+        # Для того чтобы найти середину списка, используем деление без остатка
+        # Индексы должны быть integer
+        mid = len(in_file_name) // 2
+
+        # Сортируем и объединяем подсписки
+        left_list = merge_sort_file(in_file_name[:mid], out_file_name)
+        right_list = merge_sort_file(in_file_name[mid:], out_file_name)
+        out_file_name_r = random_file_name()
+        # Объединяем отсортированные списки в результирующий
+        return merge_file(left_list, right_list, out_file_name, out_file_name_r)
     else:
         # Для того чтобы найти середину списка, используем деление без остатка
         # Индексы должны быть integer
@@ -121,21 +150,26 @@ def play():
         Тип данных: (-s или -i), обязательный, s-string, i-integer
         Имя выходного файла, обязательный, Например: Out.txt
         Имена входных файлов, не менее одного
+        
+        Для выхода из программы введите "Quit"!!!
+        
         """
     feedback = ""
 
     while True:
-        parameter_program = input(feedback + "\n" + base_prompt)  # -a -s Out.txt in1.txt in2.txt in3.txt
+        parameter_program = input(feedback + "\n" + base_prompt)  # -a -s Out.txt in1.txt in2.txt in3.txt in4.txt in5.txt
 
         feedback = ""
         parameter_program = parameter_program.split()
         data_type_command = ''
         sort_command = ''
-        print(parameter_program)
+        file_name_error = 0
+        start_of_filenames = 0
+
         if len(parameter_program) < 3:
             if len(parameter_program) == 0:
                 feedback += "Вы не ввели параметры программы!!!"
-            elif parameter_program[0] == 'Quit':
+            elif parameter_program[0] == "Quit":
                 return
             else:
                 feedback += "Вы ввели не достаточно параметров программы"
@@ -179,19 +213,16 @@ def play():
                         if os.path.exists(parameter_program[start_of_filenames-1]):  # Проверка наличия file
                             print('Файл уже существует и будет перезаписан')
                             os.remove(parameter_program[start_of_filenames-1])
-                            x = merge_sort_file(InFileName, parameter_program[start_of_filenames - 1])
+                            x = merge_sort_file(InFileName, len(InFileName), parameter_program[start_of_filenames - 1])
                             shutil.rmtree('processed data')
                             return InFileName
                         else:
-                            x = merge_sort_file(InFileName, parameter_program[start_of_filenames-1])
+                            x = merge_sort_file(InFileName, len(InFileName), parameter_program[start_of_filenames - 1])
                             shutil.rmtree('processed data')
                             return InFileName
                 else:
                     print("Введеные файлы не найдены попробуйте еще раз")
-        if parameter_program[0] == "Quit":
-            print("Exiting...")
-            return
+
 
 # Проверяем, что оно работает
-
 print(play())
