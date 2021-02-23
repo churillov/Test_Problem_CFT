@@ -43,10 +43,11 @@ def file_element_save(file_name, data):
 def merge_f(in_file_name, out_file_name, index):
     """"""
     with open(in_file_name, 'r') as f:
-        for i, l in enumerate(f):
+        for i, data in enumerate(f):
             if i + 1 == index:
-                with open(out_file_name, 'a') as f1:
-                    f1.write(l)
+                if data != '\n':
+                    with open(out_file_name, 'a') as f1:
+                        f1.write(data)
 
 
 def random_file_name():
@@ -60,6 +61,19 @@ def random_file_name():
     return track_file
 
 
+def correct_of_norm(last_item, current_item, sort_command):
+    if sort_command == '-a':
+        if last_item == '' or last_item < current_item or last_item == current_item:
+            return True
+        else:
+            return False
+    else:
+        if last_item == '' or last_item > current_item or last_item == current_item:
+            return True
+        else:
+            return False
+
+
 def merge_file(left_list, right_list, out_file_name, sort_command, data_type_command, out_file_name_r='random'):
     if out_file_name_r == 'random':
         sorted_list = out_file_name
@@ -68,7 +82,7 @@ def merge_file(left_list, right_list, out_file_name, sort_command, data_type_com
     left_list_index = right_list_index = 1
     # Длина списков часто используется, поэтому создадим переменные для удобства
     left_list_length, right_list_length = file_len(left_list[0])+1, file_len(right_list[0])+1
-
+    last_element = ''
     for _ in range(left_list_length + right_list_length - 2):
         if sort_command == '-a':
             if left_list_index < left_list_length and right_list_index < right_list_length:
@@ -80,13 +94,27 @@ def merge_file(left_list, right_list, out_file_name, sort_command, data_type_com
                                                                                                       right_list_index,
                                                                                                       data_type_command):
 
-                        file_element_save(sorted_list, file_element(left_list[0], left_list_index))
-                        left_list_index += 1
+                        if data_type_command == '-s' and file_element(left_list[0], left_list_index) == '\n':
+                            left_list_index += 1
+                        else:
+                            if correct_of_norm(last_element, file_element(left_list[0], left_list_index, data_type_command), sort_command):
+                                file_element_save(sorted_list, file_element(left_list[0], left_list_index))
+                                last_element = file_element(left_list[0], left_list_index, data_type_command)
+                                left_list_index += 1
+                            else:
+                                left_list_index += 1
                     # Если первый элемент правого подсписка меньше, добавляем его
                     # в отсортированный массив
                     else:
-                        file_element_save(sorted_list, file_element(right_list[0], right_list_index))
-                        right_list_index += 1
+                        if data_type_command == '-s' and file_element(right_list[0], right_list_index) == '\n':
+                            right_list_index += 1
+                        else:
+                            if correct_of_norm(last_element, file_element(right_list[0], right_list_index, data_type_command), sort_command):
+                                file_element_save(sorted_list, file_element(right_list[0], right_list_index))
+                                last_element = file_element(right_list[0], right_list_index, data_type_command)
+                                right_list_index += 1
+                            else:
+                                right_list_index += 1
                 except ValueError:
                     try:
                         file_element(left_list[0], left_list_index, data_type_command)
@@ -117,13 +145,30 @@ def merge_file(left_list, right_list, out_file_name, sort_command, data_type_com
                                                                                                       right_list_index,
                                                                                                       data_type_command):
 
-                        file_element_save(sorted_list, file_element(left_list[0], left_list_index))
-                        left_list_index += 1
+                        if data_type_command == '-s' and file_element(right_list[0], right_list_index) == '\n':
+                            right_list_index += 1
+
+                        if data_type_command == '-s' and file_element(left_list[0], left_list_index) == '\n':
+                            left_list_index += 1
+                        else:
+                            if correct_of_norm(last_element, file_element(left_list[0], left_list_index, data_type_command), sort_command):
+                                file_element_save(sorted_list, file_element(left_list[0], left_list_index))
+                                last_element = file_element(left_list[0], left_list_index, data_type_command)
+                                left_list_index += 1
+                            else:
+                                left_list_index += 1
                     # Если первый элемент правого подсписка меньше, добавляем его
                     # в отсортированный массив
                     else:
-                        file_element_save(sorted_list, file_element(right_list[0], right_list_index))
-                        right_list_index += 1
+                        if data_type_command == '-s' and file_element(right_list[0], right_list_index) == '\n':
+                            right_list_index += 1
+                        else:
+                            if correct_of_norm(last_element, file_element(right_list[0], right_list_index, data_type_command), sort_command):
+                                file_element_save(sorted_list, file_element(right_list[0], right_list_index))
+                                last_element = file_element(right_list[0], right_list_index, data_type_command)
+                                right_list_index += 1
+                            else:
+                                right_list_index += 1
                 except ValueError:
                     try:
                         file_element(left_list[0], left_list_index, data_type_command)
@@ -260,7 +305,7 @@ def play():
                         print("Файл уже отсортирован")
                     else:
                         if os.path.exists(parameter_program[start_of_filenames-1]):  # Проверка наличия file
-                            print('Файл уже существует и будет перезаписан')
+                            print('Файл {} уже существует и будет перезаписан'.format(parameter_program[start_of_filenames-1]))
                             os.remove(parameter_program[start_of_filenames-1])
                             x = merge_sort_file(in_file_name, data_type_command,
                                                 parameter_program[start_of_filenames - 1],
