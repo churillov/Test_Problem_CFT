@@ -2,14 +2,20 @@ import random
 import string
 import os
 import shutil
+from datetime import datetime
+
+start_time = datetime.now()
+print(datetime.now() - start_time)
 
 
 def file_len(file_name):
     """Функция возращает размер файла
     в качестве аргумента передается название файла"""
     with open(file_name) as f:
+        print(datetime.now() - start_time)
         for i, l in enumerate(f):
             pass
+    print(datetime.now() - start_time)
     return i + 1
 
 
@@ -34,14 +40,16 @@ def file_element(file_name, index, data_type='-s'):
 
 
 def file_element_save(file_name, data):
-    """Функция сохраняет данные в файл.
+    """Функция записывает данные в файл.
     В качестве аргументов передаются имя файла и данные каторые нужно записать"""
     with open(file_name, 'a') as f:
         f.write(data)
 
 
 def merge_f(in_file_name, out_file_name, index):
-    """"""
+    """Функия записывает данные в файл.
+    В качестве аргументов передаются имя файла из которого нужно взять данные,
+    имя файла в который нужно записать данные и номер строки с которой нужно начать забирать данные"""
     with open(in_file_name, 'r') as f:
         for i, data in enumerate(f):
             if i + 1 == index:
@@ -51,7 +59,8 @@ def merge_f(in_file_name, out_file_name, index):
 
 
 def random_file_name():
-    processed_data = 'processed data'  # Папка для хранения обработанных данных
+    """Функция для генерирования названий файлов промежуточного хранения данных"""
+    processed_data = 'processed data'  # Папка для хранения промежуточных отсортированных данных
     if os.path.exists(processed_data):  # Проверка наличия папки
         print('Папка уже существует')
     else:
@@ -62,6 +71,8 @@ def random_file_name():
 
 
 def correct_of_norm(last_item, current_item, sort_command):
+    """Функция проверки является ли текущий элемент наибольшим (наименьшим) по сравнению с последним записанным
+    элементом"""
     if sort_command == '-a':
         if last_item == '' or last_item < current_item or last_item == current_item:
             return True
@@ -148,7 +159,7 @@ def merge_file(left_list, right_list, out_file_name, sort_command, data_type_com
                         if data_type_command == '-s' and file_element(right_list[0], right_list_index) == '\n':
                             right_list_index += 1
 
-                        if data_type_command == '-s' and file_element(left_list[0], left_list_index) == '\n':
+                        elif data_type_command == '-s' and file_element(left_list[0], left_list_index) == '\n':
                             left_list_index += 1
                         else:
                             if correct_of_norm(last_element, file_element(left_list[0], left_list_index, data_type_command), sort_command):
@@ -249,8 +260,8 @@ def play():
         
         """
     feedback = ""
-
-    while True:  # -a -i Out.txt in1.txt in2.txt in3.txt in4.txt in5.txt
+    # -a -i Out.txt test1.txt test2.txt
+    while True:  # -d -s Out.txt in1.txt in2.txt in3.txt in4.txt in5.txt
         parameter_program = input(feedback + "\n" + base_prompt)
 
         feedback = ""
@@ -307,7 +318,7 @@ def play():
                         if os.path.exists(parameter_program[start_of_filenames-1]):  # Проверка наличия file
                             print('Файл {} уже существует и будет перезаписан'.format(parameter_program[start_of_filenames-1]))
                             os.remove(parameter_program[start_of_filenames-1])
-                            x = merge_sort_file(in_file_name, data_type_command,
+                            merge_sort_file(in_file_name, data_type_command,
                                                 parameter_program[start_of_filenames - 1],
                                                 sort_command=sort_command, len_in_file=len(in_file_name))
                             try:
@@ -316,7 +327,7 @@ def play():
                             except FileNotFoundError:
                                 return in_file_name
                         else:
-                            x = merge_sort_file(in_file_name, data_type_command,
+                            merge_sort_file(in_file_name, data_type_command,
                                                 parameter_program[start_of_filenames - 1],
                                                 sort_command=sort_command, len_in_file=len(in_file_name))
                             try:
