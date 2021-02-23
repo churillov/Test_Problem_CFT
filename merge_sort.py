@@ -53,7 +53,7 @@ def random_file_name():
     return track_file
 
 
-def merge_file(left_list, right_list, out_file_name, out_file_name_r='random'):
+def merge_file(left_list, right_list, out_file_name, sort_command, out_file_name_r='random'):
     if out_file_name_r == 'random':
         sorted_list = out_file_name
     else:
@@ -63,44 +63,80 @@ def merge_file(left_list, right_list, out_file_name, out_file_name_r='random'):
     left_list_length, right_list_length = file_len(left_list[0])+1, file_len(right_list[0])+1
 
     for _ in range(left_list_length + right_list_length - 2):
-        if left_list_index < left_list_length and right_list_index < right_list_length:
-            # Сравниваем первые элементы в начале каждого списка
-            # Если первый элемент левого подсписка меньше, добавляем его
-            # в отсортированный массив
-            try:
-                if int(file_element(left_list[0], left_list_index)) <= int(file_element(right_list[0], right_list_index)):
-                    file_element_save(sorted_list, file_element(left_list[0], left_list_index))
-                    left_list_index += 1
-                # Если первый элемент правого подсписка меньше, добавляем его
+        if sort_command == '-a':
+            if left_list_index < left_list_length and right_list_index < right_list_length:
+                # Сравниваем первые элементы в начале каждого списка
+                # Если первый элемент левого подсписка меньше, добавляем его
                 # в отсортированный массив
-                else:
-                    file_element_save(sorted_list, file_element(right_list[0], right_list_index))
-                    right_list_index += 1
-            except ValueError:
-                if len(file_element(left_list[0], left_list_index)) > 0:
-                    left_list_index += 1
-                elif len(file_element(right_list[0], right_list_index)) > 0:
-                    right_list_index += 1
-                elif len(file_element(left_list[0], left_list_index)) == 0:
-                    left_list_index += 1
-                elif len(file_element(right_list[0], right_list_index)) == 0:
-                    right_list_index += 1
+                try:
+                    if int(file_element(left_list[0], left_list_index)) <= int(file_element(right_list[0], right_list_index)):
+                        file_element_save(sorted_list, file_element(left_list[0], left_list_index))
+                        left_list_index += 1
+                    # Если первый элемент правого подсписка меньше, добавляем его
+                    # в отсортированный массив
+                    else:
+                        file_element_save(sorted_list, file_element(right_list[0], right_list_index))
+                        right_list_index += 1
+                except ValueError:
+                    if len(file_element(left_list[0], left_list_index)) > 0:
+                        left_list_index += 1
+                    elif len(file_element(right_list[0], right_list_index)) > 0:
+                        right_list_index += 1
+                    elif len(file_element(left_list[0], left_list_index)) == 0:
+                        left_list_index += 1
+                    elif len(file_element(right_list[0], right_list_index)) == 0:
+                        right_list_index += 1
 
+            # Если достигнут конец левого списка, элементы правого списка
+            # добавляем в конец результирующего списка
+            elif left_list_index == left_list_length:
+                merge_f(right_list[0], sorted_list, right_list_index)
+                right_list_index += 1
+            # Если достигнут конец правого списка, элементы левого списка
+            # добавляем в отсортированный массив
+            elif right_list_index == right_list_length:
+                merge_f(left_list[0], sorted_list, left_list_index)
+                left_list_index += 1
+        else:
+            if left_list_index < left_list_length and right_list_index < right_list_length:
+                # Сравниваем первые элементы в начале каждого списка
+                # Если первый элемент левого подсписка меньше, добавляем его
+                # в отсортированный массив
+                try:
+                    if int(file_element(left_list[0], left_list_index)) >= int(
+                            file_element(right_list[0], right_list_index)):
+                        file_element_save(sorted_list, file_element(left_list[0], left_list_index))
+                        left_list_index += 1
+                    # Если первый элемент правого подсписка меньше, добавляем его
+                    # в отсортированный массив
+                    else:
+                        file_element_save(sorted_list, file_element(right_list[0], right_list_index))
+                        right_list_index += 1
+                except ValueError:
+                    if len(file_element(left_list[0], left_list_index)) > 0:
+                        left_list_index += 1
+                    elif len(file_element(right_list[0], right_list_index)) > 0:
+                        right_list_index += 1
+                    elif len(file_element(left_list[0], left_list_index)) == 0:
+                        left_list_index += 1
+                    elif len(file_element(right_list[0], right_list_index)) == 0:
+                        right_list_index += 1
 
-        # Если достигнут конец левого списка, элементы правого списка
-        # добавляем в конец результирующего списка
-        elif left_list_index == left_list_length:
-            merge_f(right_list[0], sorted_list, right_list_index)
-            right_list_index += 1
-        # Если достигнут конец правого списка, элементы левого списка
-        # добавляем в отсортированный массив
-        elif right_list_index == right_list_length:
-            merge_f(left_list[0], sorted_list, left_list_index)
-            left_list_index += 1
+            # Если достигнут конец левого списка, элементы правого списка
+            # добавляем в конец результирующего списка
+            elif left_list_index == left_list_length:
+                merge_f(right_list[0], sorted_list, right_list_index)
+                right_list_index += 1
+            # Если достигнут конец правого списка, элементы левого списка
+            # добавляем в отсортированный массив
+            elif right_list_index == right_list_length:
+                merge_f(left_list[0], sorted_list, left_list_index)
+                left_list_index += 1
+
     return [sorted_list]
 
 
-def merge_sort_file(in_file_name, len_in_file="0", out_file_name="qw1e.txt"):
+def merge_sort_file(in_file_name, data_type_command, out_file_name='0', sort_command='-a', len_in_file=0):
 
     # Возвращаем список, если он состоит из одного элемента
     if len(in_file_name) <= 1:
@@ -111,33 +147,33 @@ def merge_sort_file(in_file_name, len_in_file="0", out_file_name="qw1e.txt"):
         mid = len(in_file_name) // 2
 
         # Сортируем и объединяем подсписки
-        left_list = merge_sort_file(in_file_name[:mid], out_file_name)
-        right_list = merge_sort_file(in_file_name[mid:], out_file_name)
+        left_list = merge_sort_file(in_file_name[:mid], data_type_command, out_file_name, sort_command)
+        right_list = merge_sort_file(in_file_name[mid:], data_type_command, out_file_name, sort_command)
 
         # Объединяем отсортированные списки в результирующий
-        return merge_file(left_list, right_list, out_file_name)
+        return merge_file(left_list, right_list, out_file_name, sort_command)
     elif len(in_file_name) > 2:
         # Для того чтобы найти середину списка, используем деление без остатка
         # Индексы должны быть integer
         mid = len(in_file_name) // 2
 
         # Сортируем и объединяем подсписки
-        left_list = merge_sort_file(in_file_name[:mid], out_file_name)
-        right_list = merge_sort_file(in_file_name[mid:], out_file_name)
+        left_list = merge_sort_file(in_file_name[:mid], data_type_command, out_file_name, sort_command)
+        right_list = merge_sort_file(in_file_name[mid:], data_type_command, out_file_name, sort_command)
         out_file_name_r = random_file_name()
         # Объединяем отсортированные списки в результирующий
-        return merge_file(left_list, right_list, out_file_name, out_file_name_r)
+        return merge_file(left_list, right_list, out_file_name, sort_command, out_file_name_r)
     else:
         # Для того чтобы найти середину списка, используем деление без остатка
         # Индексы должны быть integer
         mid = len(in_file_name) // 2
 
         # Сортируем и объединяем подсписки
-        left_list = merge_sort_file(in_file_name[:mid])
-        right_list = merge_sort_file(in_file_name[mid:])
+        left_list = merge_sort_file(in_file_name[:mid], data_type_command, sort_command=sort_command)
+        right_list = merge_sort_file(in_file_name[mid:], data_type_command, sort_command=sort_command)
         out_file_name_r = random_file_name()
         # Объединяем отсортированные списки в результирующий
-        return merge_file(left_list, right_list, out_file_name, out_file_name_r)
+        return merge_file(left_list, right_list, out_file_name, sort_command, out_file_name_r)
 
 
 def play():
@@ -156,8 +192,8 @@ def play():
         """
     feedback = ""
 
-    while True:
-        parameter_program = input(feedback + "\n" + base_prompt)  # -a -s Out.txt in1.txt in2.txt in3.txt in4.txt in5.txt
+    while True:  # -a -s Out.txt in1.txt in2.txt in3.txt in4.txt in5.txt
+        parameter_program = input(feedback + "\n" + base_prompt)
 
         feedback = ""
         parameter_program = parameter_program.split()
@@ -213,13 +249,21 @@ def play():
                         if os.path.exists(parameter_program[start_of_filenames-1]):  # Проверка наличия file
                             print('Файл уже существует и будет перезаписан')
                             os.remove(parameter_program[start_of_filenames-1])
-                            x = merge_sort_file(InFileName, len(InFileName), parameter_program[start_of_filenames - 1])
-                            shutil.rmtree('processed data')
-                            return InFileName
+                            x = merge_sort_file(InFileName, data_type_command, parameter_program[start_of_filenames - 1],
+                                                sort_command=sort_command, len_in_file=len(InFileName))
+                            try:
+                                shutil.rmtree('processed data')
+                                return InFileName
+                            except FileNotFoundError:
+                                return InFileName
                         else:
-                            x = merge_sort_file(InFileName, len(InFileName), parameter_program[start_of_filenames - 1])
-                            shutil.rmtree('processed data')
-                            return InFileName
+                            x = merge_sort_file(InFileName, data_type_command, parameter_program[start_of_filenames - 1],
+                                                sort_command=sort_command, len_in_file=len(InFileName))
+                            try:
+                                shutil.rmtree('processed data')
+                                return InFileName
+                            except FileNotFoundError:
+                                return InFileName
                 else:
                     print("Введеные файлы не найдены попробуйте еще раз")
 
